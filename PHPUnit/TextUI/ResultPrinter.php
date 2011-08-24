@@ -80,6 +80,11 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
     protected $lastTestFailed = FALSE;
 
     /**
+     * @var boolean
+     */
+    protected $anyTestFailed = FALSE;
+
+    /**
      * @var integer
      */
     protected $numAssertions = 0;
@@ -477,6 +482,7 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
     {
         $this->writeProgress('E');
         $this->lastTestFailed = TRUE;
+        $this->anyTestFailed = TRUE;
     }
 
     /**
@@ -490,6 +496,7 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
     {
         $this->writeProgress('F');
         $this->lastTestFailed = TRUE;
+        $this->anyTestFailed = TRUE;
     }
 
     /**
@@ -503,6 +510,7 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
     {
         $this->writeProgress('I');
         $this->lastTestFailed = TRUE;
+        $this->anyTestFailed = TRUE;
     }
 
     /**
@@ -517,6 +525,7 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
     {
         $this->writeProgress('S');
         $this->lastTestFailed = TRUE;
+        $this->anyTestFailed = TRUE;
     }
 
     /**
@@ -569,7 +578,11 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
     public function endTest(PHPUnit_Framework_Test $test, $time)
     {
         if (!$this->lastTestFailed) {
-            $this->writeProgress('.');
+            if ($this->anyTestFailed) {
+                $this->writeProgress('U');
+            } else {
+                $this->writeProgress('.');
+            }
         }
 
         if ($test instanceof PHPUnit_Framework_TestCase) {
